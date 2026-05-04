@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fanwar — BGMI Fantasy League</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Epilogue:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root{
+  --bg0:#08090b;--bg1:#0d0f13;--bg2:#121519;--bg3:#181c22;
+  --line:#1f242d;--line2:#262d38;
+  --text:#d8dde8;--sub:#606878;--dim:#363d4a;--white:#f0f2f6;
+  --gold:#c8a84b;--gold2:#e6c96e;--amber:#d4803a;--green:#3fa876;--red:#c95252;--blue:#4a7fd4;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg0);color:var(--text);font-family:'Epilogue',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.032;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-mark{width:30px;height:30px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.nav-logo-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:-.3px;color:var(--white);}
+.nav-logo-name em{font-style:normal;color:var(--gold);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-balance{display:flex;flex-direction:column;align-items:flex-end;background:var(--bg3);border:1px solid var(--line2);border-radius:8px;padding:6px 13px;cursor:pointer;transition:border-color .2s;}
+.nav-balance:hover{border-color:var(--gold);}
+.nav-balance-lbl{font-size:9px;color:var(--sub);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;}
+.nav-balance-amt{font-family:'DM Mono',monospace;font-size:14px;color:var(--green);margin-top:1px;}
+.nav-user{width:34px;height:34px;border-radius:7px;border:1px solid var(--line2);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--gold);cursor:pointer;transition:border-color .2s;}
+.nav-user:hover{border-color:var(--gold);}
+
+/* HERO */
+.hero{position:relative;height:220px;overflow:hidden;}
+.hero-img{width:100%;height:100%;object-fit:cover;filter:brightness(.45);}
+.hero-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--bg0) 0%,transparent 60%);}
+.hero-content{position:absolute;bottom:24px;left:24px;}
+.hero-eyebrow{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.live-pip{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);animation:pip 1.3s ease-in-out infinite;flex-shrink:0;}
+@keyframes pip{0%,100%{opacity:1;}50%{opacity:.25;}}
+.hero-h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--white);line-height:1.15;letter-spacing:-.5px;}
+.hero-h1 span{color:var(--gold);}
+
+/* STATS BAR */
+.stats-bar{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg1);}
+.stat{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--line);}
+.stat:last-child{border-right:none;}
+.stat-v{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--white);}
+.stat-l{font-size:9px;color:var(--sub);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+
+/* SHELL & TABS */
+.shell{max-width:720px;margin:0 auto;padding:24px 16px 80px;}
+.tabs{display:flex;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:4px;gap:3px;margin-bottom:22px;}
+.tab{flex:1;padding:9px 6px;background:transparent;border:none;border-radius:8px;color:var(--sub);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.tab:hover{color:var(--text);}
+.tab.on{background:var(--bg3);color:var(--white);box-shadow:0 1px 6px rgba(0,0,0,.4);}
+
+/* SECTION */
+.section{}
+.sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sec-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--sub);}
+.sec-chip{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 10px;border-radius:20px;text-transform:uppercase;}
+.live-chip{background:rgba(201,82,82,.12);color:var(--red);border:1px solid rgba(201,82,82,.25);}
+
+/* MATCH CARDS */
+.cards{display:flex;flex-direction:column;gap:10px;}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:13px;overflow:hidden;transition:border-color .2s;}
+.card:hover{border-color:var(--line2);}
+.card-img-wrap{position:relative;height:100px;}
+.card-img{width:100%;height:100%;object-fit:cover;filter:brightness(.5);}
+.card-img-grad{position:absolute;inset:0;background:linear-gradient(to right,rgba(8,9,11,.9) 0%,transparent 60%);}
+.card-img-info{position:absolute;inset:0;padding:14px 16px;display:flex;flex-direction:column;justify-content:flex-end;}
+.card-live-badge{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--red);margin-bottom:5px;}
+.card-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--white);}
+.card-body{padding:13px 16px;display:flex;align-items:center;gap:16px;}
+.card-meta{flex:1;display:flex;gap:14px;flex-wrap:wrap;}
+.cm{display:flex;flex-direction:column;gap:2px;}
+.cm-lbl{font-size:9px;color:var(--sub);letter-spacing:1px;text-transform:uppercase;}
+.cm-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);}
+.card-join-btn{padding:10px 20px;background:var(--gold);color:#08090b;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.card-join-btn:hover{background:var(--gold2);}
+.card-join-btn:disabled{background:var(--dim);color:var(--sub);cursor:not-allowed;}
+
+/* ENTRY CARDS */
+.entry-card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:10px;}
+.entry-match{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.entry-roles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.role-slot{background:var(--bg3);border:1px solid var(--line2);border-radius:8px;padding:9px 12px;}
+.role-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;margin-bottom:3px;}
+.role-player{font-size:12px;font-weight:600;color:var(--white);}
+.role-slot.impact{border-color:rgba(200,168,75,.4);background:rgba(200,168,75,.06);}
+.role-slot.impact .role-player{color:var(--gold);}
+.impact-badge{font-family:'DM Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:1px;margin-left:6px;}
+.entry-foot{display:flex;align-items:center;justify-content:space-between;}
+.entry-fee-lbl{font-size:10px;color:var(--sub);}
+.entry-fee-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--red);}
+.entry-pts{font-family:'DM Mono',monospace;font-size:14px;color:var(--gold);font-weight:700;}
+
+/* LEADERBOARD */
+.lb-hdr,.lb-row{display:grid;grid-template-columns:36px 1fr 70px 70px 70px;gap:8px;align-items:center;padding:10px 14px;}
+.lb-hdr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--line);}
+.lb-row{border-bottom:1px solid var(--line);transition:background .15s;}
+.lb-row:hover{background:rgba(255,255,255,.02);}
+.lb-row:last-child{border-bottom:none;}
+.lb-rank{font-family:'DM Mono',monospace;font-size:13px;color:var(--sub);font-weight:700;}
+.lb-rank.top{color:var(--gold);}
+.lb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.lb-sub{font-size:10px;color:var(--sub);}
+.lb-pts{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;text-align:right;}
+.lb-kills{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);text-align:right;}
+.lb-prize{font-family:'DM Mono',monospace;font-size:12px;color:var(--green);text-align:right;}
+.lb-wrap{background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+
+/* WALLET */
+.wallet-hero{background:var(--bg2);border:1px solid var(--line2);border-radius:13px;overflow:hidden;margin-bottom:16px;}
+.wallet-img-wrap{position:relative;height:110px;}
+.wallet-img-wrap img{width:100%;height:100%;object-fit:cover;filter:brightness(.35);}
+.wallet-content{position:absolute;inset:0;padding:16px 20px;display:flex;flex-direction:column;justify-content:flex-end;}
+.wallet-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;}
+.wallet-amt{font-family:'DM Mono',monospace;font-size:28px;color:var(--green);font-weight:700;margin-top:3px;}
+.wallet-btns{display:flex;gap:8px;padding:14px;}
+.wbtn{flex:1;padding:10px;border-radius:8px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;transition:all .2s;}
+.wbtn-add{background:var(--gold);color:#08090b;}
+.wbtn-add:hover{background:var(--gold2);}
+.wbtn-wd{background:var(--bg3);color:var(--sub);border:1px solid var(--line)!important;}
+.wbtn-wd:hover{color:var(--text);}
+.txn{display:flex;align-items:center;gap:11px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-bottom:6px;}
+.txn-ic{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.txn-desc{font-size:13px;font-weight:600;color:var(--text);}
+.txn-date{font-size:10px;color:var(--sub);margin-top:2px;font-family:'DM Mono',monospace;}
+.txn-amt{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;margin-left:auto;}
+.cr{color:var(--green);}
+.db{color:var(--red);}
+
+/* TEAM SELECTION MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:300;display:none;align-items:flex-end;justify-content:center;}
+.overlay.show{display:flex;}
+.modal{background:var(--bg1);border:1px solid var(--line2);border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg1);z-index:10;}
+.modal-head-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--white);}
+.modal-x{background:none;border:none;color:var(--sub);font-size:18px;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color .2s;}
+.modal-x:hover{color:var(--white);}
+.modal-body{padding:16px 20px 30px;}
+
+.mmb{background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+.mmb-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);}
+.mmb-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+.mmb-fee{text-align:right;}
+.mmb-fee-amt{font-family:'DM Mono',monospace;font-size:18px;color:var(--gold);font-weight:700;}
+.mmb-fee-lbl{font-size:9px;color:var(--sub);letter-spacing:1px;text-transform:uppercase;}
+
+/* ── NEW PLAYER PICKER ── */
+.pp-role-tabs{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;}
+.pp-role-tabs::-webkit-scrollbar{display:none;}
+.pp-tab{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--bg3);cursor:pointer;transition:all .18s;position:relative;}
+.pp-tab:hover{border-color:var(--line2);background:rgba(255,255,255,.04);}
+.pp-tab.active-igl{border-color:rgba(200,168,75,.5);background:rgba(200,168,75,.08);}
+.pp-tab.active-entry{border-color:rgba(201,82,82,.5);background:rgba(201,82,82,.08);}
+.pp-tab.active-support{border-color:rgba(74,127,212,.5);background:rgba(74,127,212,.08);}
+.pp-tab.active-freeman{border-color:rgba(63,168,118,.5);background:rgba(63,168,118,.08);}
+.pp-tab-icon{font-size:13px;}
+.pp-tab-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--sub);}
+.pp-tab.active-igl .pp-tab-label{color:var(--gold);}
+.pp-tab.active-entry .pp-tab-label{color:var(--red);}
+.pp-tab.active-support .pp-tab-label{color:var(--blue);}
+.pp-tab.active-freeman .pp-tab-label{color:var(--green);}
+.pp-tab-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--sub);}
+.pp-tab-dot.filled-igl{background:var(--gold);border-color:var(--gold);}
+.pp-tab-dot.filled-entry{background:var(--red);border-color:var(--red);}
+.pp-tab-dot.filled-support{background:var(--blue);border-color:var(--blue);}
+.pp-tab-dot.filled-freeman{background:var(--green);border-color:var(--green);}
+
+/* Team selected summary bar */
+.pp-team-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
+.pp-slot{background:var(--bg3);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;min-height:52px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;transition:all .18s;position:relative;}
+.pp-slot:hover{border-color:var(--line2);}
+.pp-slot.slot-active{border-color:rgba(200,168,75,.4);}
+.pp-slot-role{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.pp-slot-role.r-igl{color:var(--gold);}
+.pp-slot-role.r-entry{color:var(--red);}
+.pp-slot-role.r-support{color:var(--blue);}
+.pp-slot-role.r-freeman{color:var(--green);}
+.pp-slot-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pp-slot-team{font-size:9px;color:var(--sub);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pp-slot-empty{font-size:10px;color:var(--dim);font-style:italic;}
+.pp-slot-cr{position:absolute;top:6px;right:8px;font-family:'DM Mono',monospace;font-size:9px;color:var(--sub);}
+.pp-slot-x{position:absolute;top:4px;right:6px;background:rgba(201,82,82,.15);border:none;color:var(--red);width:16px;height:16px;border-radius:4px;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
+.pp-slot:hover .pp-slot-x{opacity:1;}
+
+/* Search + filter row */
+.pp-search-row{display:flex;gap:8px;margin-bottom:12px;}
+.pp-search{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:8px;padding:9px 13px;color:var(--white);font-family:'Epilogue',sans-serif;font-size:13px;outline:none;}
+.pp-search:focus{border-color:rgba(200,168,75,.4);}
+.pp-search::placeholder{color:var(--dim);}
+.pp-filter{background:var(--bg3);border:1px solid var(--line2);border-radius:8px;padding:9px 11px;color:var(--sub);font-family:'Epilogue',sans-serif;font-size:12px;outline:none;cursor:pointer;min-width:90px;}
+.pp-filter:focus{border-color:rgba(200,168,75,.3);}
+
+/* Player grid */
+.pp-grid{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;padding-right:2px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent;}
+.pp-grid::-webkit-scrollbar{width:4px;}
+.pp-grid::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px;}
+.pp-player{background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;}
+.pp-player:hover{border-color:var(--line2);background:rgba(255,255,255,.03);}
+.pp-player.selected-igl{border-color:rgba(200,168,75,.5);background:rgba(200,168,75,.06);}
+.pp-player.selected-entry{border-color:rgba(201,82,82,.5);background:rgba(201,82,82,.06);}
+.pp-player.selected-support{border-color:rgba(74,127,212,.5);background:rgba(74,127,212,.06);}
+.pp-player.selected-freeman{border-color:rgba(63,168,118,.5);background:rgba(63,168,118,.06);}
+.pp-player.used-other{opacity:.38;pointer-events:none;}
+.pp-avatar{width:36px;height:36px;border-radius:8px;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--sub);flex-shrink:0;}
+.pp-player.selected-igl .pp-avatar{border-color:var(--gold);color:var(--gold);}
+.pp-player.selected-entry .pp-avatar{border-color:var(--red);color:var(--red);}
+.pp-player.selected-support .pp-avatar{border-color:var(--blue);color:var(--blue);}
+.pp-player.selected-freeman .pp-avatar{border-color:var(--green);color:var(--green);}
+.pp-info{flex:1;min-width:0;}
+.pp-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.pp-team{font-size:10px;color:var(--sub);margin-top:2px;}
+.pp-cr{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;margin-left:auto;flex-shrink:0;}
+.pp-cr.cr-ok{color:var(--gold);}
+.pp-cr.cr-high{color:var(--red);}
+.pp-check{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--line2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;}
+.pp-player.selected-igl .pp-check{background:var(--gold);border-color:var(--gold);color:#08090b;}
+.pp-player.selected-entry .pp-check{background:var(--red);border-color:var(--red);color:#fff;}
+.pp-player.selected-support .pp-check{background:var(--blue);border-color:var(--blue);color:#fff;}
+.pp-player.selected-freeman .pp-check{background:var(--green);border-color:var(--green);color:#fff;}
+.pp-empty-msg{text-align:center;padding:24px;font-size:12px;color:var(--dim);font-style:italic;}
+
+/* role-specific label colors */
+.badge-igl{background:rgba(200,168,75,.12);color:var(--gold);border:1px solid rgba(200,168,75,.25);}
+.badge-entry{background:rgba(201,82,82,.12);color:var(--red);border:1px solid rgba(201,82,82,.25);}
+.badge-support{background:rgba(74,127,212,.12);color:var(--blue);border:1px solid rgba(74,127,212,.25);}
+.badge-freeman{background:rgba(63,168,118,.12);color:var(--green);border:1px solid rgba(63,168,118,.25);}
+
+/* IMPACT PLAYER */
+.impact-section{margin-bottom:20px;}
+.impact-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;margin-bottom:6px;}
+.impact-desc{font-size:11px;color:var(--sub);margin-bottom:12px;line-height:1.6;}
+.impact-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.impact-opt{background:var(--bg3);border:2px solid var(--line2);border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;}
+.impact-opt:hover{border-color:var(--gold);}
+.impact-opt.selected{border-color:var(--gold);background:rgba(200,168,75,.08);}
+.impact-opt input[type=radio]{position:absolute;opacity:0;width:0;height:0;}
+.impact-role{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--sub);text-transform:uppercase;margin-bottom:4px;}
+.impact-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.impact-opt.selected .impact-name{color:var(--gold);}
+.impact-star{font-size:18px;margin-bottom:4px;}
+.impact-multiplier{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);margin-top:4px;}
+.impact-empty{font-size:11px;color:var(--dim);text-align:center;padding:14px;font-style:italic;}
+
+/* BREAKDOWN */
+.breakdown{background:var(--bg3);border:1px solid var(--line2);border-radius:10px;padding:14px;margin-bottom:16px;}
+.brow{display:flex;justify-content:space-between;margin-bottom:8px;}
+.brow:last-child{margin-bottom:0;}
+.brow-lbl{font-size:12px;color:var(--sub);}
+.brow-val{font-family:'DM Mono',monospace;font-size:12px;}
+.brow-val.g{color:var(--gold);}
+.brow-val.gr{color:var(--green);}
+.brow-val.name{color:var(--white);font-size:11px;}
+
+.pay-btn{width:100%;padding:14px;background:var(--gold);color:#08090b;border:none;border-radius:11px;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:background .2s;letter-spacing:.3px;}
+.pay-btn:hover{background:var(--gold2);}
+.pay-btn:disabled{background:var(--dim);color:var(--sub);cursor:not-allowed;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:12px;z-index:500;transition:transform .32s cubic-bezier(.22,1,.36,1);box-shadow:0 16px 50px rgba(0,0,0,.65);min-width:250px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+.toast-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+
+.empty-state{text-align:center;padding:50px 20px;}
+.empty-ico{font-size:40px;margin-bottom:12px;opacity:.22;}
+.empty-h{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--dim);}
+.empty-p{font-size:11px;color:var(--dim);margin-top:5px;}
+
+@media(max-width:460px){
+  .lb-hdr,.lb-row{grid-template-columns:30px 1fr 55px 55px;}
+  .lb-kills{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">⚔️</div>
+    <div class="nav-logo-name">Fan<em>War</em></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-balance" onclick="switchTab('wallet')" id="navBalEl">
+      <div class="nav-balance-lbl">🪙 WarCoins</div>
+      <div class="nav-balance-amt" id="navBal" style="color:var(--gold)">0</div>
+    </div>
+    <div class="nav-user" id="navUserAvatar" onclick="window.location.href='account.html'" title="My Account">?</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <img class="hero-img" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1400&q=75&auto=format&fit=crop" alt="BGMI Tournament"/>
+  <div class="hero-grad"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span class="live-pip"></span>Live Fantasy League</div>
+    <div class="hero-h1">BGMI Pro League<br><span>Fantasy Platform</span></div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-v" id="hM">0</div><div class="stat-l">Matches</div></div>
+  <div class="stat"><div class="stat-v" id="hP">🪙0</div><div class="stat-l">Prize Pool</div></div>
+  <div class="stat"><div class="stat-v" id="hPl">0</div><div class="stat-l">Players</div></div>
+  <div class="stat"><div class="stat-v" style="color:var(--gold)">50 🪙</div><div class="stat-l">Entry Fee</div></div>
+</div>
+
+<div class="shell">
+  <div class="tabs">
+    <button class="tab on"  onclick="switchTab('matches')">Matches</button>
+    <button class="button tab"     onclick="switchTab('entries')">My Teams</button>
+    <button class="tab"     onclick="switchTab('leaderboard')">Leaderboard</button>
+    <button class="tab"     onclick="switchTab('wallet')">Wallet</button>
+  </div>
+
+  <!-- MATCHES -->
+  <div id="tab-matches" class="section">
+    <div class="sec-row">
+      <div class="sec-label">Today's Fixtures</div>
+      <div class="sec-chip live-chip" id="liveChip">0 Live</div>
+    </div>
+    <div class="cards" id="matchGrid"></div>
+  </div>
+
+  <!-- MY TEAMS -->
+  <div id="tab-entries" class="section" style="display:none">
+    <div class="sec-row"><div class="sec-label">My Teams</div></div>
+    <div id="entryList"></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="tab-leaderboard" class="section" style="display:none">
+    <div class="sec-row"><div class="sec-label">Leaderboard</div></div>
+    <div id="lbWrap"></div>
+  </div>
+
+  <!-- WALLET -->
+  <div id="tab-wallet" class="section" style="display:none">
+    <!-- WarCoins Balance Hero -->
+    <div class="wallet-hero">
+      <div class="wallet-img-wrap">
+        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=60&auto=format" alt=""/>
+        <div class="wallet-content">
+          <div class="wallet-lbl">🪙 WarCoins Balance</div>
+          <div class="wallet-amt" id="walletAmt" style="color:var(--gold)">0</div>
+          <div style="font-size:10px;color:var(--sub);margin-top:2px">200 coins = ₹50 cash</div>
+        </div>
+      </div>
+      <div class="wallet-btns">
+        <button class="wbtn wbtn-add" onclick="showAddCoins()">+ Add Coins</button>
+        <button class="wbtn wbtn-wd"  onclick="showWithdraw()">💸 Withdraw</button>
+      </div>
+    </div>
+
+    <!-- WITHDRAW SECTION -->
+    <div id="withdrawSection" style="display:none;background:var(--bg2);border:1px solid rgba(63,168,118,.25);border-radius:13px;padding:18px;margin-bottom:16px;">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">💸 Withdraw WarPoints</div>
+      <div style="font-size:11px;color:var(--sub);margin-bottom:14px;line-height:1.6;">200 WarCoins = ₹50 cash · Minimum 200 coins required</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;" id="withdrawGrid"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <input id="upiInput" placeholder="Enter UPI ID (e.g. name@upi)" style="flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:8px;padding:10px 13px;color:var(--white);font-family:'Epilogue',sans-serif;font-size:13px;outline:none;" onfocus="this.style.borderColor='rgba(63,168,118,.5)'" onblur="this.style.borderColor='var(--line2)'"/>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="confirmWithdraw()" style="flex:1;padding:11px;background:var(--green);color:#08090b;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Confirm Withdrawal</button>
+        <button onclick="document.getElementById('withdrawSection').style.display='none'" style="padding:11px 18px;background:var(--bg3);color:var(--sub);border:1px solid var(--line2);border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ADD COINS PACKS SECTION -->
+    <div id="addCoinsSection" style="display:none;margin-bottom:16px;">
+      <div class="sec-row"><div class="sec-label">🪙 Buy WarCoin Packs</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="coinPacksGrid">
+        <!-- packs render honge JS se -->
+      </div>
+    </div>
+
+    <div class="sec-row" style="margin-top:8px;"><div class="sec-label">Transactions</div></div>
+    <div id="txnList"></div>
+  </div>
+</div>
+
+<!-- TEAM SELECTION MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-title">Build Your Team</div>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Match Info Bar -->
+      <div class="mmb">
+        <div>
+          <div class="mmb-name" id="mName">—</div>
+          <div class="mmb-sub"  id="mSub">Entry Fee · 50 WarCoins 🪙</div>
+        </div>
+        <div class="mmb-fee">
+          <div class="mmb-fee-amt">50 🪙</div>
+          <div class="mmb-fee-lbl">WarCoins</div>
+        </div>
+      </div>
+
+      <!-- Credit Meter -->
+      <div style="background:var(--bg2);border:1px solid var(--line2);border-radius:11px;padding:14px 16px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;">Credits Budget</div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span id="creditLabel" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;">0 / 40 CR used</span>
+            <span id="creditRemaining" style="font-size:11px;color:var(--sub);">40 CR left</span>
+          </div>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;">
+          <div id="creditBarFill" style="height:100%;width:0%;background:var(--gold);border-radius:6px;transition:all .3s;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--sub);margin-top:6px;">Total 40 credits available • Select players wisely 🧠</div>
+      </div>
+
+      <!-- NEW PLAYER PICKER -->
+      <div class="roles-section">
+        <div class="roles-title" style="margin-bottom:10px;">Select Your 4 Players</div>
+
+        <!-- Team summary slots (top) -->
+        <div class="pp-team-bar" id="ppTeamBar">
+          <div class="pp-slot" id="ppSlot-igl" onclick="ppSwitchRole('igl')">
+            <div class="pp-slot-role r-igl">🎯 IGL</div>
+            <div class="pp-slot-empty" id="ppSlotName-igl">Empty</div>
+          </div>
+          <div class="pp-slot" id="ppSlot-entry" onclick="ppSwitchRole('entry')">
+            <div class="pp-slot-role r-entry">⚡ Entry</div>
+            <div class="pp-slot-empty" id="ppSlotName-entry">Empty</div>
+          </div>
+          <div class="pp-slot" id="ppSlot-support" onclick="ppSwitchRole('support')">
+            <div class="pp-slot-role r-support">🛡 Support</div>
+            <div class="pp-slot-empty" id="ppSlotName-support">Empty</div>
+          </div>
+          <div class="pp-slot" id="ppSlot-freeman" onclick="ppSwitchRole('freeman')">
+            <div class="pp-slot-role r-freeman">🦅 Freeman</div>
+            <div class="pp-slot-empty" id="ppSlotName-freeman">Empty</div>
+          </div>
+        </div>
+
+        <!-- Role tabs -->
+        <div class="pp-role-tabs" id="ppRoleTabs">
+          <div class="pp-tab active-igl" id="ppTabBtn-igl" onclick="ppSwitchRole('igl')">
+            <span class="pp-tab-icon">🎯</span>
+            <span class="pp-tab-label">IGL</span>
+            <span class="pp-tab-dot" id="ppTabDot-igl"></span>
+          </div>
+          <div class="pp-tab" id="ppTabBtn-entry" onclick="ppSwitchRole('entry')">
+            <span class="pp-tab-icon">⚡</span>
+            <span class="pp-tab-label">Entry Fragger</span>
+            <span class="pp-tab-dot" id="ppTabDot-entry"></span>
+          </div>
+          <div class="pp-tab" id="ppTabBtn-support" onclick="ppSwitchRole('support')">
+            <span class="pp-tab-icon">🛡</span>
+            <span class="pp-tab-label">Supporter</span>
+            <span class="pp-tab-dot" id="ppTabDot-support"></span>
+          </div>
+          <div class="pp-tab" id="ppTabBtn-freeman" onclick="ppSwitchRole('freeman')">
+            <span class="pp-tab-icon">🦅</span>
+            <span class="pp-tab-label">Freeman</span>
+            <span class="pp-tab-dot" id="ppTabDot-freeman"></span>
+          </div>
+        </div>
+
+        <!-- Search + Team filter -->
+        <div class="pp-search-row">
+          <input class="pp-search" id="ppSearch" placeholder="Search player name…" oninput="ppRenderGrid()" />
+          <select class="pp-filter" id="ppTeamFilter" onchange="ppRenderGrid()">
+            <option value="">All Teams</option>
+          </select>
+        </div>
+
+        <!-- Player grid -->
+        <div class="pp-grid" id="ppGrid"></div>
+
+        <!-- Hidden selects kept for backward compat with confirmEntry logic -->
+        <select id="sel-igl"     style="display:none"></select>
+        <select id="sel-entry"   style="display:none"></select>
+        <select id="sel-support" style="display:none"></select>
+        <select id="sel-freeman" style="display:none"></select>
+      </div>
+
+      <!-- Impact Player -->
+      <div class="impact-section">
+        <div class="impact-title">⭐ Impact Player (Captain)</div>
+        <div class="impact-desc">Choose 1 player as your Impact Player. Their kill points will be <strong style="color:var(--gold)">doubled (2×)</strong>.</div>
+        <div class="impact-options" id="impactOptions">
+          <div class="impact-empty" style="grid-column:1/-1">Select all 4 players first</div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="breakdown">
+        <div class="brow"><span class="brow-lbl">Credits Used</span><span class="brow-val" id="bCredits" style="color:var(--gold);font-family:'DM Mono',monospace;">0 / 40 CR</span></div>
+        <div class="brow"><span class="brow-lbl">Entry Fee</span><span class="brow-val g">50 🪙 WarCoins</span></div>
+        <div class="brow"><span class="brow-lbl">Impact Player (2×)</span><span class="brow-val name" id="bImpact">Not selected</span></div>
+        <div class="brow"><span class="brow-lbl">Team Complete</span><span class="brow-val name" id="bStatus">❌ Incomplete</span></div>
+      </div>
+
+      <button class="pay-btn" id="payBtn" onclick="confirmEntry()" disabled>Confirm &amp; Pay 50 🪙</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div style="font-size:20px" id="toastIco">✅</div>
+  <div><div class="toast-title" id="toastTitle">Done</div><div class="toast-sub" id="toastSub"></div></div>
+</div>
+
+<script>
+const KM='bz_matches', KP='bz_players', KE='bz_entries', KW='bz_warcoins', KX='bz_wctxns', KLB='bz_leaderboard';
+
+/* ── DEFAULT DATA ── */
+const DM=[
+  {id:'m1',name:'BMPS Season 3 — Match 1',type:'BMPS',time:'06:00 PM',prize:5000,spots:100,filled:67,live:true},
+  {id:'m2',name:'BGMS Finals — Match 2',type:'BGMS',time:'07:30 PM',prize:8000,spots:150,filled:112,live:false},
+  {id:'m3',name:'BMPS Season 3 — Match 3',type:'BMPS',time:'09:00 PM',prize:5000,spots:100,filled:34,live:false},
+];
+
+// Default players per role
+const DP={
+  igl:[
+    {id:'p1',name:'Jonathan',team:'Team SouL',credits:10},
+    {id:'p2',name:'Scout',team:'GodLike',credits:9.5},
+    {id:'p3',name:'Neyoo',team:'OR Esports',credits:9},
+    {id:'p4',name:'Mortal',team:'S8UL',credits:8.5},
+  ],
+  entry:[
+    {id:'p5',name:'Zgod',team:'Team SouL',credits:9},
+    {id:'p6',name:'Mavi',team:'GodLike',credits:8.5},
+    {id:'p7',name:'Ultron',team:'OR Esports',credits:8},
+    {id:'p8',name:'Owais',team:'S8UL',credits:7.5},
+  ],
+  support:[
+    {id:'p9',name:'Hyder',team:'Team SouL',credits:8},
+    {id:'p10',name:'Viper',team:'GodLike',credits:7.5},
+    {id:'p11',name:'Rolex',team:'OR Esports',credits:7},
+    {id:'p12',name:'ClutchGod',team:'S8UL',credits:7},
+  ],
+  freeman:[
+    {id:'p13',name:'Gill',team:'Team SouL',credits:8.5},
+    {id:'p14',name:'Goblin',team:'GodLike',credits:8},
+    {id:'p15',name:'Snax',team:'OR Esports',credits:7.5},
+    {id:'p16',name:'Shadow',team:'S8UL',credits:7},
+  ]
+};
+
+/* ── STORAGE ── */
+const gM  = () => JSON.parse(localStorage.getItem(KM) || JSON.stringify(DM));
+const gP  = () => JSON.parse(localStorage.getItem(KP) || JSON.stringify(DP));
+const gE  = () => JSON.parse(localStorage.getItem(KE) || '[]');
+const sE  = v  => localStorage.setItem(KE, JSON.stringify(v));
+const gW  = () => parseInt(localStorage.getItem(KW) || '0');
+const sW  = v  => { localStorage.setItem(KW, v); updateWallet(); }
+const gX  = () => { try { return JSON.parse(localStorage.getItem(KX) || '[]'); } catch(e) { return []; } }
+const sX  = v  => localStorage.setItem(KX, JSON.stringify(v));
+const gLB = () => { try { return JSON.parse(localStorage.getItem(KLB) || '[]'); } catch(e) { return []; } }
+
+/* ── CURRENT MATCH ── */
+let currentMatch = null;
+
+/* ── RENDER MATCHES ── */
+function renderMatches() {
+  const matches = gM();
+  const grid    = document.getElementById('matchGrid');
+  const live    = matches.filter(m => m.live).length;
+  document.getElementById('liveChip').textContent = live + (live === 1 ? ' Live' : ' Live');
+  document.getElementById('hM').textContent = matches.length;
+  const totalPrize = matches.reduce((s, m) => s + (m.prize || 0), 0);
+  document.getElementById('hP').textContent = '🪙' + (totalPrize >= 1000 ? (totalPrize/1000).toFixed(0) + 'K' : totalPrize);
+  document.getElementById('hPl').textContent = matches.reduce((s, m) => s + (m.filled || 0), 0);
+
+  if (!matches.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-ico">🎮</div><div class="empty-h">No matches scheduled</div><div class="empty-p">Check back soon</div></div>`;
+    return;
+  }
+  grid.innerHTML = matches.map(m => {
+    const pct     = Math.round((m.filled / m.spots) * 100);
+    const entries = gE().filter(e => e.matchId === m.id);
+    const joined  = entries.length > 0;
+    return `
+    <div class="card">
+      <div class="card-img-wrap">
+        <img class="card-img" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=60&auto=format&fit=crop" alt=""/>
+        <div class="card-img-grad"></div>
+        <div class="card-img-info">
+          ${m.live ? '<div class="card-live-badge"><span class="live-pip"></span>LIVE</div>' : ''}
+          <div class="card-name">${m.name}</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <div class="cm"><div class="cm-lbl">Prize</div><div class="cm-val">🪙${m.prize.toLocaleString()}</div></div>
+          <div class="cm"><div class="cm-lbl">Time</div><div class="cm-val">${m.time}</div></div>
+          <div class="cm"><div class="cm-lbl">Spots</div><div class="cm-val" style="color:${m.filled >= m.spots ? 'var(--red)' : m.filled / m.spots >= 0.8 ? 'var(--amber)' : 'var(--text)'}">${m.filled}/${m.spots}</div></div>
+        </div>
+        ${joined
+          ? `<button class="card-join-btn" disabled>✓ Joined</button>`
+          : `<button class="card-join-btn" onclick="openModal('${m.id}')">Join 50 🪙</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── MODAL ── */
+function openModal(matchId) {
+  currentMatch = gM().find(m => m.id === matchId);
+  if (!currentMatch) return;
+  document.getElementById('mName').textContent = currentMatch.name;
+  document.getElementById('mSub').textContent  = currentMatch.type + ' · ' + currentMatch.time;
+  populateSelects();
+  updateImpactOptions();
+  updateCreditBar();
+  updatePayBtn();
+  document.getElementById('overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  resetSelects();
+}
+
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) closeModal();
+});
+
+function resetSelects() {
+  ['igl','entry','support','freeman'].forEach(r => {
+    const el = document.getElementById('sel-' + r);
+    if (el) el.value = '';
+  });
+  // Reset new picker
+  ppSelected = { igl: null, entry: null, support: null, freeman: null };
+  ppCurrentRole = 'igl';
+  ppSyncSlots();
+  ppSyncHiddenSelects();
+  ppRenderGrid();
+  document.querySelectorAll('.impact-opt').forEach(o => o.classList.remove('selected'));
+  updateImpactOptions();
+  updatePayBtn();
+}
+
+/* ══════════════════════════════════════════
+   NEW PLAYER PICKER STATE
+═══════════════════════════════════════════ */
+let ppCurrentRole = 'igl';
+// ppSelected: { igl: playerObj|null, entry:…, support:…, freeman:… }
+let ppSelected = { igl: null, entry: null, support: null, freeman: null };
+
+const ROLES = ['igl','entry','support','freeman'];
+const ROLE_ICONS = { igl:'🎯', entry:'⚡', support:'🛡', freeman:'🦅' };
+const ROLE_COLORS = { igl:'var(--gold)', entry:'var(--red)', support:'var(--blue)', freeman:'var(--green)' };
+
+/* Called when modal opens */
+function populateSelects() {
+  ppSelected = { igl: null, entry: null, support: null, freeman: null };
+  ppCurrentRole = 'igl';
+  // Populate team filter
+  const players = gP();
+  const allPlayers = ROLES.flatMap(r => (players[r] || []).filter(p => !p.hidden));
+  const teams = [...new Set(allPlayers.map(p => p.team))].sort();
+  const tf = document.getElementById('ppTeamFilter');
+  if (tf) {
+    tf.innerHTML = '<option value="">All Teams</option>' + teams.map(t => `<option value="${t}">${t}</option>`).join('');
+  }
+  ppSwitchRole('igl');
+  ppSyncSlots();
+  ppSyncHiddenSelects();
+}
+
+function ppSwitchRole(role) {
+  ppCurrentRole = role;
+  // Update tab active state
+  ROLES.forEach(r => {
+    const btn = document.getElementById('ppTabBtn-' + r);
+    if (!btn) return;
+    btn.className = 'pp-tab' + (r === role ? ' active-' + r : '');
+  });
+  // Highlight active slot
+  ROLES.forEach(r => {
+    const slot = document.getElementById('ppSlot-' + r);
+    if (slot) slot.classList.toggle('slot-active', r === role);
+  });
+  // Clear search
+  const s = document.getElementById('ppSearch');
+  if (s) s.value = '';
+  ppRenderGrid();
+}
+
+function ppRenderGrid() {
+  const players = gP();
+  const role    = ppCurrentRole;
+  const list    = (players[role] || []).filter(p => !p.hidden);
+  const search  = (document.getElementById('ppSearch')?.value || '').toLowerCase().trim();
+  const team    = document.getElementById('ppTeamFilter')?.value || '';
+
+  // Get all selected player IDs across ALL roles
+  const selectedInOtherRoles = new Set(
+    ROLES.filter(r => r !== role && ppSelected[r])
+         .map(r => ppSelected[r].id)
+  );
+  const currentSel = ppSelected[role];
+
+  const filtered = list.filter(p => {
+    if (search && !p.name.toLowerCase().includes(search) && !p.team.toLowerCase().includes(search)) return false;
+    if (team && p.team !== team) return false;
+    return true;
+  });
+
+  const grid = document.getElementById('ppGrid');
+  if (!grid) return;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="pp-empty-msg">No players found 🔍</div>';
+    return;
+  }
+
+  const remCredits = 40 - ROLES.reduce((s,r) => s + (ppSelected[r]?.credits || 0), 0);
+
+  grid.innerHTML = filtered.map(p => {
+    const isSelected  = currentSel && currentSel.id === p.id;
+    const usedElsewhere = selectedInOtherRoles.has(p.id);
+    const wouldOverBudget = !isSelected && (p.credits || 8) > remCredits + (currentSel?.credits || 0);
+    let cls = 'pp-player';
+    if (isSelected)    cls += ' selected-' + role;
+    if (usedElsewhere) cls += ' used-other';
+    const crColor = wouldOverBudget && !isSelected ? 'cr-high' : 'cr-ok';
+    return `
+    <div class="${cls}" onclick="ppSelectPlayer('${p.id}')" data-id="${p.id}">
+      <div class="pp-avatar">${p.name.charAt(0)}</div>
+      <div class="pp-info">
+        <div class="pp-name">${p.name}</div>
+        <div class="pp-team">${p.team}</div>
+      </div>
+      <div class="pp-cr ${crColor}">${p.credits || 8} CR</div>
+      <div class="pp-check">${isSelected ? '✓' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function ppSelectPlayer(playerId) {
+  const players  = gP();
+  const role     = ppCurrentRole;
+  const list     = (players[role] || []).filter(p => !p.hidden);
+  const player   = list.find(p => p.id === playerId);
+  if (!player) return;
+
+  // Toggle: click same again → deselect
+  if (ppSelected[role]?.id === playerId) {
+    ppSelected[role] = null;
+  } else {
+    ppSelected[role] = { ...player, role };
+  }
+
+  ppSyncSlots();
+  ppSyncHiddenSelects();
+  ppRenderGrid();
+  // Auto-advance to next empty role
+  const nextEmpty = ROLES.find(r => !ppSelected[r] && r !== role);
+  if (ppSelected[role] && nextEmpty) {
+    setTimeout(() => ppSwitchRole(nextEmpty), 220);
+  }
+  onRoleChange();
+}
+
+function ppSyncSlots() {
+  ROLES.forEach(r => {
+    const p    = ppSelected[r];
+    const slot = document.getElementById('ppSlot-' + r);
+    const nm   = document.getElementById('ppSlotName-' + r);
+    const dot  = document.getElementById('ppTabDot-' + r);
+    if (!slot || !nm) return;
+    if (p) {
+      nm.className = 'pp-slot-name';
+      nm.textContent = p.name;
+      // show team below
+      let teamEl = slot.querySelector('.pp-slot-team');
+      if (!teamEl) { teamEl = document.createElement('div'); teamEl.className='pp-slot-team'; slot.appendChild(teamEl); }
+      teamEl.textContent = p.team;
+      // cr badge
+      let crEl = slot.querySelector('.pp-slot-cr');
+      if (!crEl) { crEl = document.createElement('div'); crEl.className='pp-slot-cr'; slot.appendChild(crEl); }
+      crEl.textContent = (p.credits||8)+'CR';
+      // remove X if exists then add
+      slot.querySelectorAll('.pp-slot-x').forEach(x=>x.remove());
+      const xBtn = document.createElement('button');
+      xBtn.className = 'pp-slot-x'; xBtn.textContent = '✕';
+      xBtn.onclick = (e) => { e.stopPropagation(); ppSelected[r]=null; ppSyncSlots(); ppSyncHiddenSelects(); ppRenderGrid(); onRoleChange(); };
+      slot.appendChild(xBtn);
+      if (dot) dot.className = 'pp-tab-dot filled-' + r;
+    } else {
+      nm.className = 'pp-slot-empty';
+      nm.textContent = 'Empty';
+      slot.querySelectorAll('.pp-slot-team,.pp-slot-cr,.pp-slot-x').forEach(x=>x.remove());
+      if (dot) dot.className = 'pp-tab-dot';
+    }
+  });
+}
+
+/* Keep hidden <select> elements in sync so getSelectedPlayers() still works */
+function ppSyncHiddenSelects() {
+  const allPlayers = gP();
+  ROLES.forEach(r => {
+    const sel = document.getElementById('sel-' + r);
+    if (!sel) return;
+    const list = (allPlayers[r] || []).filter(p => !p.hidden);
+    sel.innerHTML = `<option value="">—</option>` +
+      list.map(p => `<option value="${p.id}" data-name="${p.name}" data-team="${p.team}" data-credits="${p.credits||8}">${p.name}</option>`).join('');
+    const chosen = ppSelected[r];
+    if (chosen) {
+      sel.value = chosen.id;
+    } else {
+      sel.value = '';
+    }
+  });
+}
+
+/* ── ROLE CHANGE → update impact options ── */
+function onRoleChange() {
+  updateImpactOptions();
+  updateCreditBar();
+  updatePayBtn();
+}
+
+function getSelectedPlayers() {
+  const roles = ['igl', 'entry', 'support', 'freeman'];
+  return roles.map(r => {
+    const sel = document.getElementById('sel-' + r);
+    if (!sel || !sel.value) return null;
+    const opt = sel.options[sel.selectedIndex];
+    return { id: sel.value, name: opt.dataset.name, team: opt.dataset.team, role: r, credits: parseFloat(opt.dataset.credits)||8 };
+  });
+}
+
+/* ── CREDIT METER ── */
+const TOTAL_CREDITS = 40;
+
+function getUsedCredits() {
+  return getSelectedPlayers().reduce((sum, p) => sum + (p ? p.credits : 0), 0);
+}
+
+function updateCreditBar() {
+  const used = getUsedCredits();
+  const rem  = TOTAL_CREDITS - used;
+  const pct  = Math.min((used / TOTAL_CREDITS) * 100, 100);
+
+  const bar   = document.getElementById('creditBarFill');
+  const label = document.getElementById('creditLabel');
+  const remEl = document.getElementById('creditRemaining');
+  const bCr   = document.getElementById('bCredits');
+
+  if (!bar) return;
+
+  bar.style.width = pct + '%';
+  bar.style.background = rem < 0 ? 'var(--red)' : rem <= 4 ? 'var(--amber)' : 'var(--gold)';
+  label.textContent  = `${used} / ${TOTAL_CREDITS} CR used`;
+  remEl.textContent  = rem >= 0 ? `${rem} CR left` : `${Math.abs(rem)} CR over budget!`;
+  remEl.style.color  = rem < 0 ? 'var(--red)' : rem <= 4 ? 'var(--amber)' : 'var(--sub)';
+  if (bCr) {
+    bCr.textContent = `${used} / ${TOTAL_CREDITS} CR`;
+    bCr.style.color = rem < 0 ? 'var(--red)' : 'var(--gold)';
+  }
+}
+
+function updateImpactOptions() {
+  const players = getSelectedPlayers();
+  const el      = document.getElementById('impactOptions');
+  const allSelected = players.every(p => p !== null);
+
+  if (!allSelected) {
+    el.innerHTML = '<div class="impact-empty" style="grid-column:1/-1">Select all 4 players first</div>';
+    document.getElementById('bImpact').textContent = 'Not selected';
+    return;
+  }
+
+  const roleBadge = { igl: '🎯 IGL', entry: '⚡ Entry', support: '🛡 Support', freeman: '🦅 Freeman' };
+  el.innerHTML = players.map(p => `
+    <label class="impact-opt" id="imp-${p.id}" onclick="selectImpact('${p.id}')">
+      <input type="radio" name="impact" value="${p.id}"/>
+      <div class="impact-star">⭐</div>
+      <div class="impact-role">${roleBadge[p.role]}</div>
+      <div class="impact-name">${p.name}</div>
+      <div class="impact-multiplier">2× Kills</div>
+    </label>
+  `).join('');
+}
+
+function selectImpact(playerId) {
+  document.querySelectorAll('.impact-opt').forEach(o => o.classList.remove('selected'));
+  const el = document.getElementById('imp-' + playerId);
+  if (el) el.classList.add('selected');
+  const players = getSelectedPlayers();
+  const p       = players.find(p => p && p.id === playerId);
+  document.getElementById('bImpact').textContent = p ? p.name + ' (2×)' : 'Not selected';
+  updatePayBtn();
+}
+
+function getImpactPlayer() {
+  const checked = document.querySelector('.impact-opt.selected');
+  if (!checked) return null;
+  const input = checked.querySelector('input[type=radio]');
+  const players = getSelectedPlayers();
+  return players.find(p => p && p.id === input?.value) || null;
+}
+
+function updatePayBtn() {
+  const players  = getSelectedPlayers();
+  const allOk    = players.every(p => p !== null);
+  const impact   = getImpactPlayer();
+  const btn      = document.getElementById('payBtn');
+  const status   = document.getElementById('bStatus');
+  const used     = getUsedCredits();
+  const overBudget = used > TOTAL_CREDITS;
+
+  if (overBudget) {
+    btn.disabled = true;
+    btn.textContent = '❌ Over Credit Budget!';
+    status.textContent = `❌ ${used - TOTAL_CREDITS} CR over budget`;
+    status.style.color = 'var(--red)';
+  } else if (allOk && impact) {
+    btn.disabled = false;
+    btn.textContent = 'Confirm & Pay 50 🪙';
+    status.textContent = '✅ Ready';
+    status.style.color = 'var(--green)';
+  } else if (allOk && !impact) {
+    btn.disabled = true;
+    btn.textContent = 'Select Impact Player';
+    status.textContent = '⚠️ Pick Impact Player';
+    status.style.color = 'var(--amber)';
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Select All 4 Players';
+    status.textContent = '❌ Incomplete';
+    status.style.color = 'var(--red)';
+  }
+}
+
+/* ── CONFIRM ENTRY ── */
+async function confirmEntry() {
+  const wallet  = gW();
+  if (wallet < 50) {
+    toast('Insufficient WarCoins', 'You need at least 50 WarCoins. Add a coins pack!', '🪙');
+    closeModal();
+    switchTab('wallet');
+    setTimeout(() => showAddCoins(), 300);
+    return;
+  }
+  const players = getSelectedPlayers();
+  const impact  = getImpactPlayer();
+  if (!players.every(p => p !== null) || !impact) return;
+
+  // Credit budget check
+  if (getUsedCredits() > TOTAL_CREDITS) {
+    toast('Over Budget!', 'Credit limit 40 se zyada hai.', '❌');
+    return;
+  }
+
+  // Deduct WarCoins
+  sW(wallet - 50);
+  const txns = gX();
+  txns.unshift({
+    type: 'debit',
+    desc: 'Entry: ' + currentMatch.name,
+    date: new Date().toLocaleDateString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
+    amount: 50
+  });
+  sX(txns);
+
+  const username = sessionStorage.getItem('bz_user') ||
+                   (sessionStorage.getItem('bz_email') || '').split('@')[0] ||
+                   'Unknown';
+  const uid = window._currentUid || 'unknown';
+
+  const entryData = {
+    matchId:    currentMatch.id,
+    matchName:  currentMatch.name,
+    matchType:  currentMatch.type || '',
+    matchTime:  currentMatch.time,
+    username,
+    uid,
+    players,
+    impactId:   impact.id,
+    impactName: impact.name,
+    points:     0,
+    joinedAt:   Date.now()
+  };
+
+  // Save to localStorage (for immediate UI)
+  const entries = gE();
+  entries.push(entryData);
+  sE(entries);
+
+  // Increment filled count in matches (localStorage)
+  const updatedMatches = gM().map(m =>
+    m.id === currentMatch.id ? { ...m, filled: (m.filled || 0) + 1 } : m
+  );
+  localStorage.setItem(KM, JSON.stringify(updatedMatches));
+
+  // Save to Firestore (for admin to see)
+  if (typeof window.fsAddEntry === 'function') {
+    try {
+      await window.fsAddEntry(entryData);
+    } catch(e) {
+      console.error('Firestore entry save error:', e);
+    }
+  }
+
+  // Update filled count in Firestore matches too
+  if (typeof window.fsSetMatches === 'function') {
+    try {
+      await window.fsSetMatches(updatedMatches);
+    } catch(e) {
+      console.error('Firestore matches filled update error:', e);
+    }
+  }
+
+  closeModal();
+  renderMatches();
+  renderEntries();
+  switchTab('entries');
+  toast('Team Confirmed! 🎮', 'Your team has been entered. Good luck!', '✅');
+}
+
+/* ── MY ENTRIES ── */
+function renderEntries() {
+  const entries = gE();
+  const el      = document.getElementById('entryList');
+  if (!entries.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">🎮</div><div class="empty-h">No teams yet</div><div class="empty-p">Join a match to build your first team</div></div>`;
+    return;
+  }
+  const roleBadge = { igl: '🎯 IGL', entry: '⚡ Entry', support: '🛡 Support', freeman: '🦅 Freeman' };
+  el.innerHTML = entries.map(e => {
+    const totalCR = e.players.reduce((s, p) => s + (p.credits||8), 0);
+    return `
+    <div class="entry-card">
+      <div class="entry-match">${e.matchName} · ${e.matchTime}</div>
+      <div class="entry-roles">
+        ${e.players.map(p => `
+          <div class="role-slot ${p.id === e.impactId ? 'impact' : ''}">
+            <div class="role-badge">${roleBadge[p.role] || p.role}${p.id === e.impactId ? '<span class="impact-badge">⭐ 2×</span>' : ''}</div>
+            <div class="role-player">${p.name}</div>
+            <div style="font-size:10px;color:var(--sub);margin-top:2px">${p.team}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);margin-top:2px;">${p.credits||8} CR</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="entry-foot">
+        <div>
+          <div class="entry-fee-lbl">Entry Fee Paid</div>
+          <div class="entry-fee-val">-50 🪙</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:10px;color:var(--sub);">Credits Used</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;">${totalCR} / 40 CR</div>
+        </div>
+        <div class="entry-pts">${e.points > 0 ? e.points + ' pts' : 'Awaiting'}</div>
+      </div>
+    </div>
+  `}).join('');
+}
+
+/* ── LEADERBOARD ── */
+function renderLeaderboard() {
+  const lb  = gLB();
+  const el  = document.getElementById('lbWrap');
+  if (!lb.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">🏆</div><div class="empty-h">Leaderboard is empty</div><div class="empty-p">Results will appear after matches end</div></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="lb-wrap">
+      <div class="lb-hdr"><span>#</span><span>Player</span><span>Kills</span><span>Points</span><span>Prize</span></div>
+      ${lb.map((r, i) => `
+        <div class="lb-row">
+          <div class="lb-rank ${i < 3 ? 'top' : ''}">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
+          <div><div class="lb-name">${r.username}</div><div class="lb-sub">${r.impactPlayer} ⭐ 2×</div></div>
+          <div class="lb-kills">${r.kills}</div>
+          <div class="lb-pts">${r.points}</div>
+          <div class="lb-prize">${r.prize ? '🪙' + r.prize : '—'}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+/* ── WALLET ── */
+function updateWallet() {
+  const w = gW();
+  document.getElementById('navBal').textContent  = w.toLocaleString() + ' 🪙';
+  document.getElementById('walletAmt').textContent = w.toLocaleString();
+}
+
+function renderTxns() {
+  const txns = gX();
+  const el   = document.getElementById('txnList');
+  if (!txns.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">💸</div><div class="empty-h">No transactions yet</div></div>`;
+    return;
+  }
+  el.innerHTML = txns.slice(0, 15).map(t => `
+    <div class="txn">
+      <div class="txn-ic" style="background:${t.type==='credit'?'rgba(63,168,118,.1)':'rgba(201,82,82,.1)'}">${t.type==='credit'?'🪙':'🎮'}</div>
+      <div style="flex:1">
+        <div class="txn-desc">${t.desc}</div>
+        <div class="txn-date">${t.date}</div>
+      </div>
+      <div class="txn-amt ${t.type==='credit'?'cr':'db'}">${t.type==='credit'?'+':'-'}${t.amount} 🪙</div>
+    </div>
+  `).join('');
+}
+
+/* ── COIN PACKS ── */
+const COIN_PACKS = [
+  { id:'p1', coins:100,  price:20,  label:'Starter',  bonus:0,    color:'var(--blue)',   bg:'rgba(74,127,212,.1)' },
+  { id:'p2', coins:250,  price:45,  label:'Popular',  bonus:10,   color:'var(--gold)',   bg:'rgba(200,168,75,.1)', badge:'🔥 Best Value' },
+  { id:'p3', coins:600,  price:100, label:'Pro',      bonus:50,   color:'var(--green)',  bg:'rgba(63,168,118,.1)', badge:'⚡ Most Popular' },
+  { id:'p4', coins:1400, price:200, label:'Champion', bonus:200,  color:'var(--amber)',  bg:'rgba(212,128,58,.1)', badge:'👑 Max Bonus' },
+];
+
+const WITHDRAW_OPTIONS = [
+  { coins:200,  cash:50  },
+  { coins:400,  cash:100 },
+  { coins:800,  cash:200 },
+  { coins:2000, cash:500 },
+];
+
+let selectedWithdrawOption = null;
+
+function showAddCoins() {
+  const section = document.getElementById('addCoinsSection');
+  const grid    = document.getElementById('coinPacksGrid');
+  section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  document.getElementById('withdrawSection').style.display = 'none';
+  if (section.style.display === 'block') {
+    grid.innerHTML = COIN_PACKS.map(p => `
+      <div onclick="buyCoinPack('${p.id}')" style="background:${p.bg};border:1px solid ${p.color}33;border-radius:11px;padding:14px 12px;cursor:pointer;text-align:center;position:relative;transition:all .2s;" onmouseover="this.style.borderColor='${p.color}'" onmouseout="this.style.borderColor='${p.color}33'">
+        ${p.badge ? `<div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:${p.color};color:#08090b;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;letter-spacing:.5px">${p.badge}</div>` : ''}
+        <div style="font-family:'DM Mono',monospace;font-size:22px;color:${p.color};font-weight:700;margin-top:${p.badge?'6px':'0'}">${p.coins}</div>
+        <div style="font-size:9px;color:var(--sub);letter-spacing:1.5px;text-transform:uppercase;margin:2px 0 6px">WarCoins</div>
+        ${p.bonus ? `<div style="font-size:10px;color:${p.color};margin-bottom:6px">+${p.bonus} bonus 🎁</div>` : '<div style="margin-bottom:6px;height:18px"></div>'}
+        <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px">${p.label}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:16px;color:${p.color};font-weight:700">₹${p.price}</div>
+      </div>
+    `).join('');
+  }
+}
+
+// ── Apni Razorpay TEST Key ID yahan daalo ──
+const RAZORPAY_KEY_ID = 'rzp_test_SkupqpBdQWLgA6';
+const SERVER_URL = 'http://localhost:3000';
+
+async function buyCoinPack(packId) {
+  const pack = COIN_PACKS.find(p => p.id === packId);
+  if (!pack) return;
+  const total     = pack.coins + pack.bonus;
+  const userId    = sessionStorage.getItem('bz_user') || 'unknown';
+  const userEmail = sessionStorage.getItem('bz_email') || '';
+
+  // Step 1: Backend se order banao
+  toast('Processing…', 'Creating your order…', '⏳');
+  let orderData;
+  try {
+    const res = await fetch(`${SERVER_URL}/api/create-order`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ packId, userId }),
+    });
+    orderData = await res.json();
+    if (!res.ok) throw new Error(orderData.error || 'Order failed');
+  } catch (err) {
+    toast('Server Error ❌', 'server.js chal raha hai? Check karo!', '❌');
+    return;
+  }
+
+  // Step 2: Razorpay Checkout kholo
+  if (typeof Razorpay === 'undefined') {
+    toast('Load Error ❌', 'Page reload karo aur dobara try karo.', '❌');
+    return;
+  }
+
+  const rzp = new Razorpay({
+    key:         RAZORPAY_KEY_ID,
+    amount:      orderData.amount,
+    currency:    orderData.currency,
+    name:        'FanWar',
+    description: `${pack.label} Pack — ${total} WarCoins 🪙`,
+    order_id:    orderData.orderId,
+    prefill:     { name: userId, email: userEmail },
+    theme:       { color: '#c8a84b' },
+    modal: {
+      ondismiss: () => toast('Cancelled', 'Payment cancel ho gayi.', '⚠️')
+    },
+    handler: async function(response) {
+      // Step 3: Payment verify karo
+      try {
+        const verifyRes = await fetch(`${SERVER_URL}/api/verify-payment`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({
+            razorpay_order_id:   response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature:  response.razorpay_signature,
+            packId,
+            userId,
+          }),
+        });
+        const result = await verifyRes.json();
+        if (result.success) {
+          // ✅ Verified — coins credit karo
+          sW(gW() + total);
+          const txns = gX();
+          txns.unshift({
+            type:   'credit',
+            desc:   `💳 ${pack.label} Pack — ${total} WarCoins`,
+            date:   new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
+            amount: total
+          });
+          sX(txns);
+          updateWallet();
+          renderTxns();
+          document.getElementById('addCoinsSection').style.display = 'none';
+          toast('Payment Successful! 🎉', `+${total} WarCoins credited!`, '🪙');
+        } else {
+          toast('Verify Failed ❌', 'Payment verify nahi hua. Support se contact karo.', '❌');
+        }
+      } catch(err) {
+        toast('Error', 'Verification mein problem aayi.', '❌');
+      }
+    },
+  });
+
+  rzp.on('payment.failed', (r) => {
+    toast('Payment Failed ❌', r.error.description || 'Try again', '❌');
+  });
+  rzp.open();
+}
+
+function showWithdraw() {
+  const section = document.getElementById('withdrawSection');
+  section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  document.getElementById('addCoinsSection').style.display = 'none';
+  selectedWithdrawOption = null;
+
+  const bal  = gW();
+  const grid = document.getElementById('withdrawGrid');
+  grid.innerHTML = WITHDRAW_OPTIONS.map((o,i) => {
+    const canAfford = bal >= o.coins;
+    return `
+      <div id="wopt-${i}" onclick="selectWithdrawOpt(${i})" style="background:var(--bg3);border:1px solid ${canAfford ? 'var(--line2)' : 'var(--line)'};border-radius:10px;padding:12px;text-align:center;cursor:${canAfford ? 'pointer' : 'not-allowed'};opacity:${canAfford ? '1' : '.4'};transition:all .2s;">
+        <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);font-weight:700">${o.coins} 🪙</div>
+        <div style="font-size:10px;color:var(--sub);margin:3px 0">WarCoins</div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--green)">= ₹${o.cash}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectWithdrawOpt(i) {
+  const bal = gW();
+  const opt = WITHDRAW_OPTIONS[i];
+  if (bal < opt.coins) return;
+  selectedWithdrawOption = i;
+  document.querySelectorAll('[id^="wopt-"]').forEach((el, idx) => {
+    el.style.borderColor = idx === i ? 'var(--green)' : 'var(--line2)';
+    el.style.background  = idx === i ? 'rgba(63,168,118,.08)' : 'var(--bg3)';
+  });
+}
+
+function confirmWithdraw() {
+  if (selectedWithdrawOption === null) { toast('Select an option', 'Please choose a withdrawal amount.', '⚠️'); return; }
+  const opt = WITHDRAW_OPTIONS[selectedWithdrawOption];
+  const upi = document.getElementById('upiInput').value.trim();
+  const bal = gW();
+  if (!upi || !upi.includes('@')) { toast('Invalid UPI', 'Please enter a valid UPI ID.', '⚠️'); return; }
+  if (bal < opt.coins) { toast('Insufficient WarCoins', `You need ${opt.coins} coins.`, '⚠️'); return; }
+  sW(bal - opt.coins);
+  const txns = gX();
+  txns.unshift({
+    type:   'debit',
+    desc:   `💸 Withdrawal — ${opt.coins} coins → ₹${opt.cash} to ${upi}`,
+    date:   new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
+    amount: opt.coins
+  });
+  sX(txns);
+  renderTxns();
+  document.getElementById('withdrawSection').style.display = 'none';
+  document.getElementById('upiInput').value = '';
+  selectedWithdrawOption = null;
+  toast('Withdrawal Requested! ✅', `₹${opt.cash} will be credited to ${upi} within 24 hrs.`, '💸');
+}
+
+function addMoney() { showAddCoins(); }
+
+/* ── TABS ── */
+function switchTab(name) {
+  ['matches','entries','leaderboard','wallet'].forEach((t, i) => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('on', t === name);
+  });
+  if (name === 'entries')     renderEntries();
+  if (name === 'leaderboard') renderLeaderboard();
+  if (name === 'wallet')      renderTxns();
+}
+
+/* ── TOAST ── */
+function toast(title, sub, ico) {
+  document.getElementById('toastIco').textContent   = ico || '✅';
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastSub').textContent   = sub;
+  const el = document.getElementById('toast');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3800);
+}
+
+/* ── AUTH GUARD & INIT ── */
+document.body.style.visibility = 'hidden';
+
+(function(){
+  let u = sessionStorage.getItem('bz_user') || '';
+  if (!u) { const e = sessionStorage.getItem('bz_email') || ''; if (e) u = e.split('@')[0]; }
+  const av = document.getElementById('navUserAvatar');
+  if (av) av.textContent = (u.charAt(0) || '?').toUpperCase();
+})();
+
+renderMatches();
+updateWallet();
+</script>
+
+<!-- Firebase Auth + Firestore Sync -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, collection, addDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:            "AIzaSyBFISZIL7CTNJbvGCPQQWvyaWFOQ9v2-Bw",
+  authDomain:        "battlezone-8566c.firebaseapp.com",
+  projectId:         "battlezone-8566c",
+  storageBucket:     "battlezone-8566c.firebasestorage.app",
+  messagingSenderId: "562778202923",
+  appId:             "1:562778202923:web:3a09c18fb04dd2818b5b6e"
+});
+
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── Auth Guard ──
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.replace('index.html');
+  } else {
+    const uname = user.displayName || user.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g,'');
+    sessionStorage.setItem('bz_logged_in', '1');
+    sessionStorage.setItem('bz_email', user.email || '');
+    sessionStorage.setItem('bz_user', uname);
+    const av = document.getElementById('navUserAvatar');
+    if (av) av.textContent = uname.charAt(0).toUpperCase();
+    document.body.style.visibility = 'visible';
+  }
+});
+
+// ── Firestore: Players real-time sync ──
+onSnapshot(doc(db, 'config', 'players'), snap => {
+  const data = snap.exists() ? snap.data() : null;
+  if (data && Object.keys(data).length > 0) {
+    // Firestore se mila → localStorage update karo
+    localStorage.setItem('bz_players', JSON.stringify(data));
+  } else {
+    // Firestore mein kuch nahi → default players use karo
+    localStorage.removeItem('bz_players');
+  }
+  // Modal khula ho to selects refresh karo
+  if (document.getElementById('overlay')?.classList.contains('show')) {
+    if (typeof populateSelects === 'function') populateSelects();
+  }
+  console.log('✅ Players loaded from Firestore');
+});
+
+// ── Firestore: Matches real-time sync ──
+onSnapshot(doc(db, 'config', 'matches'), snap => {
+  const data = snap.exists() ? snap.data() : null;
+  if (data && data.list) {
+    localStorage.setItem('bz_matches', JSON.stringify(data.list));
+  } else {
+    localStorage.removeItem('bz_matches');
+  }
+  if (typeof renderMatches === 'function') renderMatches();
+  if (typeof updateHomeStats === 'function') updateHomeStats();
+  console.log('✅ Matches loaded from Firestore');
+});
+
+// ── Firestore: Leaderboard real-time sync ──
+onSnapshot(doc(db, 'config', 'leaderboard'), snap => {
+  const data = snap.exists() ? snap.data() : null;
+  if (data && data.entries) {
+    localStorage.setItem('bz_leaderboard', JSON.stringify(data.entries));
+  } else {
+    localStorage.removeItem('bz_leaderboard');
+  }
+  if (typeof renderLeaderboard === 'function') renderLeaderboard();
+  console.log('✅ Leaderboard loaded from Firestore');
+});
+
+// ── Firestore: Save entry (called from confirmEntry) ──
+window.fsAddEntry = async function(entryData) {
+  await addDoc(collection(db, 'entries'), entryData);
+};
+
+// ── Firestore: Update matches (filled count) ──
+window.fsSetMatches = async function(arr) {
+  await setDoc(doc(db, 'config', 'matches'), { list: arr });
+};
+
+// ── Firestore: User ki apni entries real-time sync ──
+onAuthStateChanged(auth, user => {
+  window._currentUid = user ? user.uid : null;
+
+  if (user) {
+    // Sirf is user ki entries Firestore se listen karo
+    const entriesQ = query(
+      collection(db, 'entries'),
+      where('uid', '==', user.uid)
+    );
+    onSnapshot(entriesQ, snap => {
+      const entries = snap.docs
+        .map(d => ({ firestoreId: d.id, ...d.data() }))
+        .sort((a, b) => (b.joinedAt || 0) - (a.joinedAt || 0));
+      localStorage.setItem('bz_entries', JSON.stringify(entries));
+      if (typeof renderEntries === 'function') renderEntries();
+      if (typeof renderMatches === 'function') renderMatches();
+      console.log('✅ Entries synced:', entries.length);
+    });
+  }
+});
+
+</script>
+</body>
+</html>
