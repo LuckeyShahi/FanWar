@@ -349,7 +349,7 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
         <div class="wallet-content">
           <div class="wallet-lbl">🪙 WarCoins Balance</div>
           <div class="wallet-amt" id="walletAmt" style="color:var(--gold)">0</div>
-          <div style="font-size:10px;color:var(--sub);margin-top:2px">200 coins = ₹50 cash</div>
+          <div style="font-size:10px;color:var(--sub);margin-top:2px">1000 coins = ₹100 cash</div>
         </div>
       </div>
       <div class="wallet-btns">
@@ -361,7 +361,7 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
     <!-- WITHDRAW SECTION -->
     <div id="withdrawSection" style="display:none;background:var(--bg2);border:1px solid rgba(63,168,118,.25);border-radius:13px;padding:18px;margin-bottom:16px;">
       <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">💸 Withdraw WarPoints</div>
-      <div style="font-size:11px;color:var(--sub);margin-bottom:14px;line-height:1.6;">200 WarCoins = ₹50 cash · Minimum 200 coins required</div>
+      <div style="font-size:11px;color:var(--sub);margin-bottom:14px;line-height:1.6;">1000 WarCoins = ₹100 cash · Minimum 1000 coins required</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;" id="withdrawGrid"></div>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
         <input id="upiInput" placeholder="Enter UPI ID (e.g. name@upi)" style="flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:8px;padding:10px 13px;color:var(--white);font-family:'Epilogue',sans-serif;font-size:13px;outline:none;" onfocus="this.style.borderColor='rgba(63,168,118,.5)'" onblur="this.style.borderColor='var(--line2)'"/>
@@ -1121,17 +1121,17 @@ function renderTxns() {
 
 /* ── COIN PACKS ── */
 const COIN_PACKS = [
-  { id:'p1', coins:100,  price:20,  label:'Starter',  bonus:0,    color:'var(--blue)',   bg:'rgba(74,127,212,.1)' },
-  { id:'p2', coins:250,  price:45,  label:'Popular',  bonus:10,   color:'var(--gold)',   bg:'rgba(200,168,75,.1)', badge:'🔥 Best Value' },
-  { id:'p3', coins:600,  price:100, label:'Pro',      bonus:50,   color:'var(--green)',  bg:'rgba(63,168,118,.1)', badge:'⚡ Most Popular' },
-  { id:'p4', coins:1400, price:200, label:'Champion', bonus:200,  color:'var(--amber)',  bg:'rgba(212,128,58,.1)', badge:'👑 Max Bonus' },
+  { id:'p1', coins:100,  price:19,  label:'Starter',  color:'var(--blue)',   bg:'rgba(74,127,212,.1)' },
+  { id:'p2', coins:250,  price:45,  label:'Popular',  color:'var(--gold)',   bg:'rgba(200,168,75,.1)', badge:'🔥 Best Value' },
+  { id:'p3', coins:600,  price:99,  label:'Pro',      color:'var(--green)',  bg:'rgba(63,168,118,.1)', badge:'⚡ Most Popular' },
+  { id:'p4', coins:1400, price:199, label:'Champion', color:'var(--amber)',  bg:'rgba(212,128,58,.1)', badge:'👑 Top Pick' },
 ];
 
 const WITHDRAW_OPTIONS = [
-  { coins:200,  cash:50  },
-  { coins:400,  cash:100 },
-  { coins:800,  cash:200 },
-  { coins:2000, cash:500 },
+  { coins:1000, cash:100, id:'w1', label:'Basic'    },
+  { coins:1200, cash:130, id:'w2', label:'Standard' },
+  { coins:1800, cash:180, id:'w3', label:'Premium'  },
+  { coins:3000, cash:350, id:'w4', label:'Elite'    },
 ];
 
 let selectedWithdrawOption = null;
@@ -1147,7 +1147,7 @@ function showAddCoins() {
         ${p.badge ? `<div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:${p.color};color:#08090b;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;letter-spacing:.5px">${p.badge}</div>` : ''}
         <div style="font-family:'DM Mono',monospace;font-size:22px;color:${p.color};font-weight:700;margin-top:${p.badge?'6px':'0'}">${p.coins}</div>
         <div style="font-size:9px;color:var(--sub);letter-spacing:1.5px;text-transform:uppercase;margin:2px 0 6px">WarCoins</div>
-        ${p.bonus ? `<div style="font-size:10px;color:${p.color};margin-bottom:6px">+${p.bonus} bonus 🎁</div>` : '<div style="margin-bottom:6px;height:18px"></div>'}
+        <div style="margin-bottom:6px;height:18px"></div>
         <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px">${p.label}</div>
         <div style="font-family:'DM Mono',monospace;font-size:16px;color:${p.color};font-weight:700">₹${p.price}</div>
       </div>
@@ -1157,12 +1157,12 @@ function showAddCoins() {
 
 // ── Apni Razorpay TEST Key ID yahan daalo ──
 const RAZORPAY_KEY_ID = 'rzp_test_SkupqpBdQWLgA6';
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'https://fanwar-server.onrender.com';
 
 async function buyCoinPack(packId) {
   const pack = COIN_PACKS.find(p => p.id === packId);
   if (!pack) return;
-  const total     = pack.coins + pack.bonus;
+  const total     = pack.coins;
   const userId    = sessionStorage.getItem('bz_user') || 'unknown';
   const userEmail = sessionStorage.getItem('bz_email') || '';
 
@@ -1281,22 +1281,42 @@ function confirmWithdraw() {
   const opt = WITHDRAW_OPTIONS[selectedWithdrawOption];
   const upi = document.getElementById('upiInput').value.trim();
   const bal = gW();
+  const userId = sessionStorage.getItem('bz_user') || 'unknown';
   if (!upi || !upi.includes('@')) { toast('Invalid UPI', 'Please enter a valid UPI ID.', '⚠️'); return; }
   if (bal < opt.coins) { toast('Insufficient WarCoins', `You need ${opt.coins} coins.`, '⚠️'); return; }
-  sW(bal - opt.coins);
-  const txns = gX();
-  txns.unshift({
-    type:   'debit',
-    desc:   `💸 Withdrawal — ${opt.coins} coins → ₹${opt.cash} to ${upi}`,
-    date:   new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
-    amount: opt.coins
+
+  // Server pe withdraw request bhejo
+  fetch(`${SERVER_URL}/api/withdraw`, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ packId: opt.id, userId, upiId: upi }),
+  })
+  .then(r => r.json())
+  .then(result => {
+    if (result.success) {
+      // Server ne coins deduct kar diye, local bhi update karo
+      sW(bal - opt.coins);
+      const txns = gX();
+      txns.unshift({
+        type:   'debit',
+        desc:   `💸 Withdrawal — ${opt.coins} coins → ₹${opt.cash} to ${upi}`,
+        date:   new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
+        amount: opt.coins
+      });
+      sX(txns);
+      updateWallet();
+      renderTxns();
+      document.getElementById('withdrawSection').style.display = 'none';
+      document.getElementById('upiInput').value = '';
+      selectedWithdrawOption = null;
+      toast('Withdrawal Requested! ✅', `₹${opt.cash} will be credited to ${upi} within 24 hrs.`, '💸');
+    } else {
+      toast('Withdraw Failed ❌', result.error || 'Dobara try karo.', '❌');
+    }
+  })
+  .catch(() => {
+    toast('Server Error ❌', 'Network issue — dobara try karo.', '❌');
   });
-  sX(txns);
-  renderTxns();
-  document.getElementById('withdrawSection').style.display = 'none';
-  document.getElementById('upiInput').value = '';
-  selectedWithdrawOption = null;
-  toast('Withdrawal Requested! ✅', `₹${opt.cash} will be credited to ${upi} within 24 hrs.`, '💸');
 }
 
 function addMoney() { showAddCoins(); }
