@@ -21,7 +21,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 /* NAV */
 nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
 .nav-logo{display:flex;align-items:center;gap:10px;}
-.nav-logo-mark{width:30px;height:30px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.nav-logo-mark{width:30px;height:30px;border-radius:6px;background:transparent;display:flex;align-items:center;justify-content:center;font-size:14px;}
 .nav-logo-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:-.3px;color:var(--white);}
 .nav-logo-name em{font-style:normal;color:var(--gold);}
 .nav-right{display:flex;align-items:center;gap:10px;}
@@ -283,7 +283,7 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
 
 <nav>
   <div class="nav-logo">
-    <div class="nav-logo-mark">⚔️</div>
+    <div class="nav-logo-mark" style="background:none;border:none;box-shadow:none;padding:0;"><img src="logo.png" style="width:36px;height:36px;object-fit:contain;"/></div>
     <div class="nav-logo-name">Fan<em>War</em></div>
   </div>
   <div class="nav-right">
@@ -308,7 +308,7 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
   <div class="stat"><div class="stat-v" id="hM">0</div><div class="stat-l">Matches</div></div>
   <div class="stat"><div class="stat-v" id="hP">🪙0</div><div class="stat-l">Prize Pool</div></div>
   <div class="stat"><div class="stat-v" id="hPl">0</div><div class="stat-l">Players</div></div>
-  <div class="stat"><div class="stat-v" style="color:var(--gold)">50 🪙</div><div class="stat-l">Entry Fee</div></div>
+  <div class="stat"><div class="stat-v" style="color:var(--gold)">100 🪙</div><div class="stat-l">Entry Fee</div></div>
 </div>
 
 <div class="shell">
@@ -337,6 +337,7 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
   <!-- LEADERBOARD -->
   <div id="tab-leaderboard" class="section" style="display:none">
     <div class="sec-row"><div class="sec-label">Leaderboard</div></div>
+    <div id="lbMatchBadge" style="display:none;margin:0 0 12px 0;padding:8px 14px;background:rgba(200,168,75,.12);border:1px solid rgba(200,168,75,.3);border-radius:10px;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.5px;">🎮 <span id="lbMatchName"></span></div>
     <div id="lbWrap"></div>
   </div>
 
@@ -398,10 +399,10 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
       <div class="mmb">
         <div>
           <div class="mmb-name" id="mName">—</div>
-          <div class="mmb-sub"  id="mSub">Entry Fee · 50 WarCoins 🪙</div>
+          <div class="mmb-sub"  id="mSub">Entry Fee · 100 WarCoins 🪙</div>
         </div>
         <div class="mmb-fee">
-          <div class="mmb-fee-amt">50 🪙</div>
+          <div class="mmb-fee-amt">100 🪙</div>
           <div class="mmb-fee-lbl">WarCoins</div>
         </div>
       </div>
@@ -411,14 +412,14 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
           <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;">Credits Budget</div>
           <div style="display:flex;gap:12px;align-items:center;">
-            <span id="creditLabel" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;">0 / 40 CR used</span>
-            <span id="creditRemaining" style="font-size:11px;color:var(--sub);">40 CR left</span>
+            <span id="creditLabel" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;">0 / 45 CR used</span>
+            <span id="creditRemaining" style="font-size:11px;color:var(--sub);">45 CR left</span>
           </div>
         </div>
         <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;">
           <div id="creditBarFill" style="height:100%;width:0%;background:var(--gold);border-radius:6px;transition:all .3s;"></div>
         </div>
-        <div style="font-size:10px;color:var(--sub);margin-top:6px;">Total 40 credits available • Select players wisely 🧠</div>
+        <div style="font-size:10px;color:var(--sub);margin-top:6px;">Total 45 credits available • Select players wisely 🧠</div>
       </div>
 
       <!-- NEW PLAYER PICKER -->
@@ -498,13 +499,13 @@ nav{position:sticky;top:0;z-index:200;height:58px;background:rgba(8,9,11,.9);bac
 
       <!-- Breakdown -->
       <div class="breakdown">
-        <div class="brow"><span class="brow-lbl">Credits Used</span><span class="brow-val" id="bCredits" style="color:var(--gold);font-family:'DM Mono',monospace;">0 / 40 CR</span></div>
-        <div class="brow"><span class="brow-lbl">Entry Fee</span><span class="brow-val g">50 🪙 WarCoins</span></div>
+        <div class="brow"><span class="brow-lbl">Credits Used</span><span class="brow-val" id="bCredits" style="color:var(--gold);font-family:'DM Mono',monospace;">0 / 45 CR</span></div>
+        <div class="brow"><span class="brow-lbl">Entry Fee</span><span class="brow-val g">100 🪙 WarCoins</span></div>
         <div class="brow"><span class="brow-lbl">Impact Player (2×)</span><span class="brow-val name" id="bImpact">Not selected</span></div>
         <div class="brow"><span class="brow-lbl">Team Complete</span><span class="brow-val name" id="bStatus">❌ Incomplete</span></div>
       </div>
 
-      <button class="pay-btn" id="payBtn" onclick="confirmEntry()" disabled>Confirm &amp; Pay 50 🪙</button>
+      <button class="pay-btn" id="payBtn" onclick="confirmEntry()" disabled>Confirm &amp; Pay 100 🪙</button>
     </div>
   </div>
 </div>
@@ -604,7 +605,7 @@ function renderMatches() {
         </div>
         ${joined
           ? `<button class="card-join-btn" disabled>✓ Joined</button>`
-          : `<button class="card-join-btn" onclick="openModal('${m.id}')">Join 50 🪙</button>`}
+          : `<button class="card-join-btn" onclick="openModal('${m.id}')">Join 100 🪙</button>`}
       </div>
     </div>`;
   }).join('');
@@ -725,7 +726,7 @@ function ppRenderGrid() {
     return;
   }
 
-  const remCredits = 40 - ROLES.reduce((s,r) => s + (ppSelected[r]?.credits || 0), 0);
+  const remCredits = 45 - ROLES.reduce((s,r) => s + (ppSelected[r]?.credits || 0), 0);
 
   grid.innerHTML = filtered.map(p => {
     const isSelected  = currentSel && currentSel.id === p.id;
@@ -843,7 +844,7 @@ function getSelectedPlayers() {
 }
 
 /* ── CREDIT METER ── */
-const TOTAL_CREDITS = 40;
+const TOTAL_CREDITS = 45;
 
 function getUsedCredits() {
   return getSelectedPlayers().reduce((sum, p) => sum + (p ? p.credits : 0), 0);
@@ -929,7 +930,7 @@ function updatePayBtn() {
     status.style.color = 'var(--red)';
   } else if (allOk && impact) {
     btn.disabled = false;
-    btn.textContent = 'Confirm & Pay 50 🪙';
+    btn.textContent = 'Confirm & Pay 100 🪙';
     status.textContent = '✅ Ready';
     status.style.color = 'var(--green)';
   } else if (allOk && !impact) {
@@ -948,8 +949,8 @@ function updatePayBtn() {
 /* ── CONFIRM ENTRY ── */
 async function confirmEntry() {
   const wallet  = gW();
-  if (wallet < 50) {
-    toast('Insufficient WarCoins', 'You need at least 50 WarCoins. Add a coins pack!', '🪙');
+  if (wallet < 100) {
+    toast('Insufficient WarCoins', 'You need at least 100 WarCoins. Add a coins pack!', '🪙');
     closeModal();
     switchTab('wallet');
     setTimeout(() => showAddCoins(), 300);
@@ -961,18 +962,18 @@ async function confirmEntry() {
 
   // Credit budget check
   if (getUsedCredits() > TOTAL_CREDITS) {
-    toast('Over Budget!', 'Credit limit 40 se zyada hai.', '❌');
+    toast('Over Budget!', 'Credit limit 45 se zyada hai.', '❌');
     return;
   }
 
-  // Deduct WarCoins
-  sW(wallet - 50);
+  // Deduct WarCoins — localStorage immediately update karo (optimistic UI)
+  sW(wallet - 100);
   const txns = gX();
   txns.unshift({
     type: 'debit',
     desc: 'Entry: ' + currentMatch.name,
     date: new Date().toLocaleDateString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
-    amount: 50
+    amount: 100
   });
   sX(txns);
 
@@ -980,6 +981,22 @@ async function confirmEntry() {
                    (sessionStorage.getItem('bz_email') || '').split('@')[0] ||
                    'Unknown';
   const uid = window._currentUid || 'unknown';
+
+  // Firestore se bhi coins deduct karo (source of truth)
+  if (typeof window.fsDeductCoins === 'function' && uid !== 'unknown') {
+    try {
+      await window.fsDeductCoins(uid, 100);
+    } catch(e) {
+      // Agar Firestore deduction fail ho (e.g. insufficient coins race condition)
+      // optimistic local update wapas karo
+      sW(wallet);
+      const revertTxns = gX();
+      revertTxns.shift();
+      sX(revertTxns);
+      toast('Coins Error ❌', 'Balance check failed. Dobara try karo.', '❌');
+      return;
+    }
+  }
 
   const entryData = {
     matchId:    currentMatch.id,
@@ -1058,11 +1075,11 @@ function renderEntries() {
       <div class="entry-foot">
         <div>
           <div class="entry-fee-lbl">Entry Fee Paid</div>
-          <div class="entry-fee-val">-50 🪙</div>
+          <div class="entry-fee-val">-100 🪙</div>
         </div>
         <div style="text-align:center;">
           <div style="font-size:10px;color:var(--sub);">Credits Used</div>
-          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;">${totalCR} / 40 CR</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;">${totalCR} / 45 CR</div>
         </div>
         <div class="entry-pts">${e.points > 0 ? e.points + ' pts' : 'Awaiting'}</div>
       </div>
@@ -1074,6 +1091,20 @@ function renderEntries() {
 function renderLeaderboard() {
   const lb  = gLB();
   const el  = document.getElementById('lbWrap');
+
+  // Match name badge
+  const matchName = localStorage.getItem('bz_lb_matchname') || '';
+  const badge = document.getElementById('lbMatchBadge');
+  const nameEl = document.getElementById('lbMatchName');
+  if (badge && nameEl) {
+    if (matchName) {
+      nameEl.textContent = matchName;
+      badge.style.display = 'block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
   if (!lb.length) {
     el.innerHTML = `<div class="empty-state"><div class="empty-ico">🏆</div><div class="empty-h">Leaderboard is empty</div><div class="empty-p">Results will appear after matches end</div></div>`;
     return;
@@ -1155,9 +1186,10 @@ function showAddCoins() {
   }
 }
 
-// ── Apni Razorpay TEST Key ID yahan daalo ──
-const RAZORPAY_KEY_ID = 'rzp_test_SkupqpBdQWLgA6';
+// SERVER_URL — backend ka URL
 const SERVER_URL = 'https://fanwar-server.onrender.com';
+// NOTE: Razorpay key ab backend se aata hai (orderData.razorpayKeyId)
+// Frontend mein hardcode mat karo — especially live key kabhi nahi
 
 async function buyCoinPack(packId) {
   const pack = COIN_PACKS.find(p => p.id === packId);
@@ -1189,7 +1221,7 @@ async function buyCoinPack(packId) {
   }
 
   const rzp = new Razorpay({
-    key:         RAZORPAY_KEY_ID,
+    key:         orderData.razorpayKeyId,
     amount:      orderData.amount,
     currency:    orderData.currency,
     name:        'FanWar',
@@ -1216,8 +1248,8 @@ async function buyCoinPack(packId) {
         });
         const result = await verifyRes.json();
         if (result.success) {
-          // ✅ Verified — coins credit karo
-          sW(gW() + total);
+          // ✅ Verified — Firestore ne coins credit kar diye
+          // sW() yahan mat karo — onSnapshot(users/{uid}) auto-update karega
           const txns = gX();
           txns.unshift({
             type:   'credit',
@@ -1226,7 +1258,6 @@ async function buyCoinPack(packId) {
             amount: total
           });
           sX(txns);
-          updateWallet();
           renderTxns();
           document.getElementById('addCoinsSection').style.display = 'none';
           toast('Payment Successful! 🎉', `+${total} WarCoins credited!`, '🪙');
@@ -1294,8 +1325,8 @@ function confirmWithdraw() {
   .then(r => r.json())
   .then(result => {
     if (result.success) {
-      // Server ne coins deduct kar diye, local bhi update karo
-      sW(bal - opt.coins);
+      // Server ne Firestore se coins deduct kar diye — onSnapshot auto-update karega
+      // sW() yahan mat karo — warna double deduction dikh sakta hai
       const txns = gX();
       txns.unshift({
         type:   'debit',
@@ -1304,7 +1335,6 @@ function confirmWithdraw() {
         amount: opt.coins
       });
       sX(txns);
-      updateWallet();
       renderTxns();
       document.getElementById('withdrawSection').style.display = 'none';
       document.getElementById('upiInput').value = '';
@@ -1360,7 +1390,7 @@ updateWallet();
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, doc, onSnapshot, collection, addDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, collection, addDoc, setDoc, query, where, runTransaction, increment } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey:            "AIzaSyBFISZIL7CTNJbvGCPQQWvyaWFOQ9v2-Bw",
@@ -1386,6 +1416,18 @@ onAuthStateChanged(auth, user => {
     const av = document.getElementById('navUserAvatar');
     if (av) av.textContent = uname.charAt(0).toUpperCase();
     document.body.style.visibility = 'visible';
+
+    // ── FIX: Firestore se warCoins real-time sync ──
+    // localStorage ki bz_warcoins ko Firestore ke users/{uid}.warCoins se sync karo
+    // Isse payment, withdrawal, entry — sab ke baad balance automatic update hoga
+    onSnapshot(doc(db, 'users', user.uid), snap => {
+      const data = snap.exists() ? snap.data() : {};
+      const firestoreCoins = typeof data.warCoins === 'number' ? data.warCoins : 0;
+      // localStorage update karo aur nav/wallet UI refresh karo
+      localStorage.setItem('bz_warcoins', firestoreCoins);
+      if (typeof updateWallet === 'function') updateWallet();
+      console.log('🪙 warCoins synced from Firestore:', firestoreCoins);
+    });
   }
 });
 
@@ -1424,8 +1466,10 @@ onSnapshot(doc(db, 'config', 'leaderboard'), snap => {
   const data = snap.exists() ? snap.data() : null;
   if (data && data.entries) {
     localStorage.setItem('bz_leaderboard', JSON.stringify(data.entries));
+    localStorage.setItem('bz_lb_matchname', data.matchName || '');
   } else {
     localStorage.removeItem('bz_leaderboard');
+    localStorage.removeItem('bz_lb_matchname');
   }
   if (typeof renderLeaderboard === 'function') renderLeaderboard();
   console.log('✅ Leaderboard loaded from Firestore');
@@ -1434,6 +1478,18 @@ onSnapshot(doc(db, 'config', 'leaderboard'), snap => {
 // ── Firestore: Save entry (called from confirmEntry) ──
 window.fsAddEntry = async function(entryData) {
   await addDoc(collection(db, 'entries'), entryData);
+};
+
+// ── Firestore: Entry fee ke liye coins deduct karo ──
+// confirmEntry() is call karta hai taaki Firestore balance bhi sahi rahe
+window.fsDeductCoins = async function(uid, amount) {
+  const userRef = doc(db, 'users', uid);
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(userRef);
+    const current = snap.exists() ? (snap.data().warCoins || 0) : 0;
+    if (current < amount) throw new Error('Insufficient coins');
+    tx.set(userRef, { warCoins: increment(-amount) }, { merge: true });
+  });
 };
 
 // ── Firestore: Update matches (filled count) ──

@@ -172,12 +172,10 @@ select option{background:#121519;}
     <!-- Logo -->
     <div style="text-align:center;margin-bottom:28px;">
       <div style="
-        width:52px;height:52px;border-radius:12px;
-        background:#c8a84b;
+        width:52px;height:52px;
         display:inline-flex;align-items:center;justify-content:center;
-        font-size:24px;margin-bottom:14px;
-        box-shadow:0 6px 28px rgba(200,168,75,.3);
-      ">⚔️</div>
+        margin-bottom:14px;
+      "><img src="logo.png" style="width:52px;height:52px;object-fit:contain;"/></div>
       <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#f0f2f6;letter-spacing:-.3px;">
         Fan<span style="color:#c8a84b">War</span>
       </div>
@@ -240,7 +238,7 @@ select option{background:#121519;}
 
 <nav>
   <div class="nav-logo">
-    <div class="nav-logo-mark">⚔️</div>
+    <div class="nav-logo-mark" style="background:none;"><img src="logo.png" style="width:28px;height:28px;object-fit:contain;"/></div>
     <div class="nav-logo-name">Fan<em>War</em></div>
   </div>
   <div class="admin-pill">Admin Panel</div>
@@ -487,13 +485,16 @@ select option{background:#121519;}
    ════════════════════════════════════════════ */
 const ADMIN_PASSWORD = 'admin@123'; // ⚠️ APNA PASSWORD YAHAN BADLO
 
-function checkPassword() {
+async function checkPassword() {
   const input = document.getElementById('lockInput').value;
   const err   = document.getElementById('lockErr');
 
   if (input === ADMIN_PASSWORD) {
-    // Sahi password — lock screen hatao
     sessionStorage.setItem('admin_auth', '1');
+    // window.__adminSignIn module script se set hoga
+    if (window.__adminSignIn) {
+      try { await window.__adminSignIn(); } catch(e) { console.warn('Auth:', e); }
+    }
     const lock = document.getElementById('lockScreen');
     lock.style.opacity = '0';
     lock.style.transition = 'opacity .3s';
@@ -503,7 +504,6 @@ function checkPassword() {
     err.style.display = 'block';
     document.getElementById('lockInput').value = '';
     document.getElementById('lockInput').focus();
-    // Shake animation
     const card = document.getElementById('lockInput');
     card.style.borderColor = 'rgba(201,82,82,.6)';
     setTimeout(() => card.style.borderColor = '#262d38', 1000);
@@ -514,8 +514,11 @@ function checkPassword() {
 (function() {
   if (sessionStorage.getItem('admin_auth') === '1') {
     document.getElementById('lockScreen').style.display = 'none';
+    // window.__adminSignIn module se set hoga — thoda wait karo
+    setTimeout(() => {
+      if (window.__adminSignIn) window.__adminSignIn().catch(e => console.warn('Auth:', e));
+    }, 500);
   } else {
-    // Page content hide karo jab tak password na daalo
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('lockInput').focus();
     });
@@ -925,8 +928,10 @@ async function publishLeaderboard() {
   if (!data.length) { toast('No Data', 'Add at least one row', '⚠️'); return; }
 
   data.sort((a, b) => b.points - a.points);
+  const selEl = document.getElementById('lbMatch');
+  const matchName = selEl ? selEl.options[selEl.selectedIndex]?.text || '' : '';
   try {
-    await fsSetLeaderboard(data);
+    await fsSetLeaderboard(data, matchName);
     toast('Leaderboard Published! 🏆', data.length + ' entries updated', '🏆');
   } catch(e) {
     console.error('publishLeaderboard error:', e);
@@ -1102,6 +1107,7 @@ addLbRow(); // Start with 1 empty row
 <!-- ═══ FIREBASE + FIRESTORE (admin real-time) ═══ -->
 <script type="module">
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 import {
   getFirestore,
   collection, doc,
@@ -1120,6 +1126,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 window.db = getFirestore(app);
+const auth = getAuth(app);
+
+// checkPassword (plain script) ko signInAnonymously access dena
+window.__adminSignIn = () => signInAnonymously(auth);
 
 /* ── FIRESTORE WRITE HELPERS (exposed globally) ── */
 
@@ -1134,8 +1144,8 @@ window.fsSetPlayers = async (obj) => {
 };
 
 // Leaderboard — single doc 'config/leaderboard'
-window.fsSetLeaderboard = async (arr) => {
-  await setDoc(doc(window.db, 'config', 'leaderboard'), { entries: arr });
+window.fsSetLeaderboard = async (arr, matchName) => {
+  await setDoc(doc(window.db, 'config', 'leaderboard'), { entries: arr, matchName: matchName || '' });
 };
 
 // Clear all entries (delete each doc)
