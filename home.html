@@ -1384,6 +1384,11 @@ document.body.style.visibility = 'hidden';
 
 renderMatches();
 updateWallet();
+
+// ── Hash se wallet tab auto-open (#wallet se aane par) ──
+if (window.location.hash === '#wallet') {
+  switchTab('wallet');
+}
 </script>
 
 <!-- Firebase Auth + Firestore Sync -->

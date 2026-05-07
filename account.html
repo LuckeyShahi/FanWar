@@ -417,7 +417,7 @@ nav{
         <div class="wallet-bal-left">
           <div class="wallet-bal-lbl">🪙 WarCoins Balance</div>
           <div class="wallet-bal-amt" id="walletAmt" style="color:var(--gold)">0 🪙</div>
-          <div style="font-size:10px;color:var(--sub);margin-top:4px">200 coins = ₹50 cash</div>
+          <div style="font-size:10px;color:var(--sub);margin-top:4px">1000 coins = ₹100 cash</div>
         </div>
         <button class="wallet-add" onclick="window.location.href='home.html#wallet'">+ Add Coins</button>
       </div>
@@ -653,7 +653,7 @@ window.changePassword = async function() {
 
 /* ── ADD MONEY → redirect to home wallet tab ── */
 window.addMoney = function() {
-  window.location.href = 'home.html';
+  window.location.href = 'home.html#wallet';
 };
 
 function renderWallet() {
@@ -721,7 +721,7 @@ const faqs = [
   { q: 'How do I withdraw my WarCoins?',
     a: 'Go to Home → Wallet tab → click "Withdraw" → choose a conversion option (e.g. 200 coins = ₹50) → enter your UPI ID. Amount will be credited within 24 hours.' },
   { q: 'What is the conversion rate for WarCoins?',
-    a: '200 WarCoins = ₹50 cash. You can also withdraw 400 coins for ₹100, 800 coins for ₹200, or 2000 coins for ₹500.' },
+    a: '1000 WarCoins = ₹100 cash. You can also withdraw 2000 coins for ₹200, or 5000 coins for ₹500.' },
   { q: 'How do I get more WarCoins?',
     a: 'Go to Wallet tab → click "Add Coins" → choose a pack. Starter (100 coins for ₹20), Popular (250+10 bonus for ₹45), Pro (600+50 bonus for ₹100), or Champion (1400+200 bonus for ₹200).' },
   { q: 'Can I change my username?',
